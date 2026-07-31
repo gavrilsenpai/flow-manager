@@ -42,5 +42,5 @@ minio:
 app:
   kafka:
     topics:
-      to-convert: file-conversion-requested
-      converted: file-conversion-result
+      to-convert: file-conversion-requests
+      converted: file-conversion-results

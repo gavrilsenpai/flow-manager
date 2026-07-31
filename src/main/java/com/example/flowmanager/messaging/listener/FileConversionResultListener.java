@@ -24,12 +24,12 @@ public class FileConversionResultListener {
     public void handleResult(String payload) {
         try {
             FileConversionResultEvent event = objectMapper.readValue(payload, FileConversionResultEvent.class);
-            log.info("Получен результат конвертации: messageId={}, success={}", event.messageId(), event.success());
+            log.info("Получен результат конвертации: messageId={}, success={}", event.messageId(), event.isSuccess());
 
             FileMetadata fileMetadata = fileMetadataRepository.findById(event.messageId())
                     .orElseThrow(() -> new IllegalArgumentException("Метаданные файла не найдены по id: " + event.messageId()));
 
-            if (event.success()) {
+            if (event.isSuccess()) {
                 fileMetadata.setStatus(FileStatus.SUCCESS);
                 fileMetadata.setTargetBucket(event.bucket());
                 fileMetadata.setTargetObjectKey(event.objectKey());

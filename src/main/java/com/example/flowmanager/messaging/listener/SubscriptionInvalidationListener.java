@@ -13,7 +13,7 @@ public class SubscriptionInvalidationListener {
 
     private final SubscriptionCacheService cacheService;
 
-    @KafkaListener(topics = "subscription-invalidations", groupId = "flow-manager-group")
+    @KafkaListener(topics = "${app.kafka.topics.subscription-invalidations}", groupId = "${app.kafka.groups.flow-manager}")
     public void handleInvalidation(String username) {
         log.info("Received cache invalidation event for user: {}", username);
         cacheService.evictSubscriptionCache(username);

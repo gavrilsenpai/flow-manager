@@ -48,3 +48,6 @@ app:
     topics:
       to-convert: file-conversion-requests
       converted: file-conversion-results
+      subscription-invalidations: subscription-invalidations
+    groups:
+      flow-manager: flow-manager-group

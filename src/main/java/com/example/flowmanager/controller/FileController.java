@@ -4,20 +4,17 @@ import com.example.flowmanager.dto.FileStatusResponse;
 import com.example.flowmanager.entity.FileMetadata;
 import com.example.flowmanager.mapper.FileMapper;
 import com.example.flowmanager.service.FileManagementService;
+import com.example.flowmanager.service.SubscriptionCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/api/v1/files")
@@ -26,10 +23,14 @@ public class FileController {
 
     private final FileManagementService fileManagementService;
     private final FileMapper fileMapper;
+    private final SubscriptionCacheService subscriptionCacheService;
 
     @PostMapping
-    public ResponseEntity<FileStatusResponse> uploadFile(@RequestParam("file") MultipartFile file) {
-        FileMetadata metadata = fileManagementService.uploadAndStartConversion(file);
+    public ResponseEntity<FileStatusResponse> uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestHeader(value = "X-User-Login", required = false) String username) {
+
+        FileMetadata metadata = fileManagementService.validateAndUpload(file, username);
         return ResponseEntity.ok(fileMapper.toResponse(metadata));
     }
 
